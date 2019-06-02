@@ -4,14 +4,14 @@ const M = 19;
     N = 29;
     a = 20;
 
-type Ar = array [0..M] of array [0..N] of boolean;
+type Ar = array [0..M] of array [-3..N] of boolean;
 type Ac = array [0..M] of array [0..N] of Color;
 type Af = array [1..19] of array [1..4] of Point;
 
 var colors:Ac;
     field:Ar;
     figures:Af;
-    left_tilt:integer;
+    left_tilt,number:integer;
     
 procedure set_figures();
 begin
@@ -22,8 +22,8 @@ begin
   
   figures[2][1] := (0,0);
   figures[2][2] := (1,0);
-  figures[2][3] := (2,0); //   X
-  figures[2][4] := (1,-1); // XXX
+  figures[2][3] := (1,-1); // X
+  figures[2][4] := (2,0); // XXX
   
   figures[3][1] := (0,0);
   figures[3][2] := (0,-1); // X
@@ -32,13 +32,13 @@ begin
   
   figures[4][1] := (0,-1);
   figures[4][2] := (1,-1);
-  figures[4][3] := (2,-1); // XXX
-  figures[4][4] := (1,0); //   X
+  figures[4][3] := (1,0); // XXX
+  figures[4][4] := (2,-1); // X
   
   figures[5][1] := (1,0);
-  figures[5][2] := (1,-1); //  X
+  figures[5][2] := (0,-1); //  X
   figures[5][3] := (1,-2); // XX
-  figures[5][4] := (0,-1); //  X
+  figures[5][4] := (1,-1); //  X
   
   figures[6][1] := (0,0); //  X
   figures[6][2] := (0,-1); // X
@@ -62,13 +62,13 @@ begin
   
   figures[10][1] := (0,-1);
   figures[10][2] := (1,-1);
-  figures[10][3] := (2,0); // XX
-  figures[10][4] := (1,0); //  XX
+  figures[10][3] := (1,0); // XX
+  figures[10][4] := (2,0); //  XX
   
-  figures[11][1] := (1,-2);
+  figures[11][1] := (0,0);
   figures[11][2] := (1,-1); // X
   figures[11][3] := (0,-1); //XX
-  figures[11][4] := (0,0);  //X
+  figures[11][4] := (1,-2); //X
   
   //  X
   //XXX
@@ -84,10 +84,10 @@ begin
   figures[13][4] := (1,0); //  XX 
   
   
-  figures[14][1] := (0,-1);
-  figures[14][2] := (1,-1);
-  figures[14][3] := (2,-1);// XXX
-  figures[14][4] := (0,0); // X
+  figures[14][1] := (0,0);
+  figures[14][2] := (0,-1);
+  figures[14][3] := (1,-1);// XXX
+  figures[14][4] := (2,-1);//  X
   
   figures[15][1] := (0,-2);
   figures[15][2] := (1,0);  // XX
@@ -99,13 +99,13 @@ begin
 
   figures[16][1] := (0,0);
   figures[16][2] := (1,0);
-  figures[16][3] := (2,0); //  X
-  figures[16][4] := (0,-1); // XXX
+  figures[16][3] := (0,-1); //  X
+  figures[16][4] := (2,0); // XXX
   
   figures[17][1] := (0,0);
   figures[17][2] := (0,-1);  //XX
-  figures[17][3] := (1,-2); // X
-  figures[17][4] := (0,-2); // X 
+  figures[17][3] := (0,-2); // X
+  figures[17][4] := (1,-2); // X 
   
   figures[18][1] := (0,-1);
   figures[18][2] := (1,-1);
@@ -114,8 +114,8 @@ begin
   
   figures[19][1] := (1,-2);
   figures[19][2] := (1,-1); //X
-  figures[19][3] := (1,0); // X
-  figures[19][4] := (0,0); //XX 
+  figures[19][3] := (0,0); // X
+  figures[19][4] := (1,0); //XX 
   
   
   
@@ -182,7 +182,7 @@ flag:=false;
 end;
     
 
-procedure draw_figure(number,x,y:integer);
+procedure draw_figure(x,y:integer);
 var c:color;
 begin
   c:=clRandom;  
@@ -190,35 +190,38 @@ begin
     square(x+figures[number][i].x,y+figures[number][i].y,c);
 end;
 
-function move_figure(number:integer; var level:integer):boolean;
+function move_figure(var level:integer):boolean;
 var flag:boolean;
 begin
   flag:=true;
   for var i:=1 to 4 do
   begin
-    if(field[left_tilt+figure[number].x][level+figure[number].y] = false) then flag:=false;
+    if(field[left_tilt + figures[number][i].x][level+figures[number][i].y] = false) then flag:=false;
   end;
   if(flag) then
   begin
-    draw_figure(number,left_tilt+figure[number].x,level+figure[number].y);
+    draw_figure(left_tilt,level);
     level:=level+1;
   end;
   move_figure:=flag;
 end;
 
 procedure tilt(vk:integer);
+var poss:boolean;
 begin
-  if(vk == vk_left and left_tilt > 0) then
+  if((vk = vk_left) and (left_tilt > 0)) then
     left_tilt:=left_tilt-1;
-    
+  if((vk = vk_right) and (left_tilt+figures[number][4].x+1 < M)) then
+    left_tilt:=left_tilt+1;
 end;
 
 var x,y:integer;
     need_check, go_down:boolean;
-    figure, level:integer;
+    level:integer;
 
 BEGIN
   setWindowSize(a*M,a*N);
+  onKeyDown:=tilt;
   set_figures;
   for x:=0 to M do
     for y:=0 to N do
@@ -237,10 +240,10 @@ BEGIN
   begin
     level:=0;
     left_tilt:=9;
-    figure:= random(1,20);
+    number:= random(1,19);
     go_down:=true;
     while(go_down) do
-      go_down:=move_figure(figure, level);
+      go_down:=move_figure(level);
     
     need_check:=true;
     while(need_check) do
