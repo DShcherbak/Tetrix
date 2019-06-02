@@ -195,8 +195,8 @@ end;
 
 procedure draw_figure(x, y: integer; c: Color);
 begin
-  for var i := 1 to 4 do
-    square(x + figures[number][i].x, y + figures[number][i].y - 1, clWhite);
+ // for var i := 1 to 4 do
+ //   square(x + figures[number][i].x, y + figures[number][i].y - 1, clWhite);
   for var i := 1 to 4 do
     square(x + figures[number][i].x, y + figures[number][i].y, c);
   redraw;
