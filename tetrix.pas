@@ -6,18 +6,19 @@ const M = 19;
 
 type Ar = array [0..M] of array [0..N] of boolean;
 type Ac = array [0..M] of array [0..N] of Color;
-type Af = array [1..4] of array [0..28] of Point;
+type Af = array [1..19] of array [1..4] of Point;
 
 var colors:Ac;
     field:Ar;
     figures:Af;
+    left_tilt:integer;
     
 procedure set_figures();
 begin
   figures[1][1] := (0,0);
-  figures[1][2] := (0,1);
-  figures[1][3] := (1,0); // XX
-  figures[1][4] := (1,1); // XX
+  figures[1][2] := (0,-1);
+  figures[1][3] := (1,0); //  XX
+  figures[1][4] := (1,-1); // XX
   
   figures[2][1] := (0,0);
   figures[2][2] := (1,0);
@@ -25,24 +26,24 @@ begin
   figures[2][4] := (1,-1); // XXX
   
   figures[3][1] := (0,0);
-  figures[3][2] := (0,1); // X
-  figures[3][3] := (0,2); // XX
-  figures[3][4] := (1,1); // X 
+  figures[3][2] := (0,-1); // X
+  figures[3][3] := (0,-2); // XX
+  figures[3][4] := (1,-1); // X 
   
-  figures[4][1] := (0,0);
-  figures[4][2] := (1,0);
-  figures[4][3] := (2,0); // XXX
-  figures[4][4] := (1,1); //  X
+  figures[4][1] := (0,-1);
+  figures[4][2] := (1,-1);
+  figures[4][3] := (2,-1); // XXX
+  figures[4][4] := (1,0); //   X
   
-  figures[5][1] := (0,0);
-  figures[5][2] := (0,1); //  X
-  figures[5][3] := (0,2); // XX
-  figures[5][4] := (-1,2); // X
+  figures[5][1] := (1,0);
+  figures[5][2] := (1,-1); //  X
+  figures[5][3] := (1,-2); // XX
+  figures[5][4] := (0,-1); //  X
   
-  figures[6][1] := (0,0); // X
-  figures[6][2] := (0,1); // X
-  figures[6][3] := (0,2); // X
-  figures[6][4] := (0,3); // X
+  figures[6][1] := (0,0); //  X
+  figures[6][2] := (0,-1); // X
+  figures[6][3] := (0,-2); // X
+  figures[6][4] := (0,-3); // X
   
   figures[7][1] := (0,0); 
   figures[7][2] := (1,0); 
@@ -54,20 +55,20 @@ begin
   figures[8][3] := (1,-1); //  XX
   figures[8][4] := (2,-1); // XX
   
-  figures[9][1] := (0,0);
-  figures[9][2] := (0,1); // X
-  figures[9][3] := (1,1); // XX
-  figures[9][4] := (1,2); //  X 
+  figures[9][1] := (0,-1);
+  figures[9][2] := (0,-2); // X
+  figures[9][3] := (1,-1); // XX
+  figures[9][4] := (1,0); //   X 
   
-  figures[10][1] := (0,0);
-  figures[10][2] := (1,0);
+  figures[10][1] := (0,-1);
+  figures[10][2] := (1,-1);
   figures[10][3] := (2,0); // XX
-  figures[10][4] := (1,1); //  XX
+  figures[10][4] := (1,0); //  XX
   
-  figures[11][1] := (0,0);
-  figures[11][2] := (0,1);  // X
-  figures[11][3] := (-1,1); //XX
-  figures[11][4] := (-1,2); //X
+  figures[11][1] := (1,-2);
+  figures[11][2] := (1,-1); // X
+  figures[11][3] := (0,-1); //XX
+  figures[11][4] := (0,0);  //X
   
   //  X
   //XXX
@@ -78,43 +79,43 @@ begin
   figures[12][4] := (2,-1); // XXX
   
   figures[13][1] := (0,0);
-  figures[13][2] := (0,1); // X
-  figures[13][3] := (0,2); // X
-  figures[13][4] := (1,2); // XX 
+  figures[13][2] := (0,-1); // X
+  figures[13][3] := (0,-2); // X
+  figures[13][4] := (1,0); //  XX 
   
   
-  figures[14][1] := (0,0);
-  figures[14][2] := (1,0);
-  figures[14][3] := (2,0); // XXX
-  figures[14][4] := (0,1); // X
+  figures[14][1] := (0,-1);
+  figures[14][2] := (1,-1);
+  figures[14][3] := (2,-1);// XXX
+  figures[14][4] := (0,0); // X
   
-  figures[15][1] := (0,0);
-  figures[15][2] := (1,0); // XX
-  figures[15][3] := (1,1); //  X
-  figures[15][4] := (1,2); //  X 
+  figures[15][1] := (0,-2);
+  figures[15][2] := (1,0);  // XX
+  figures[15][3] := (1,-1); //  X
+  figures[15][4] := (1,-2); //  X 
   
 
  
-  
+
   figures[16][1] := (0,0);
   figures[16][2] := (1,0);
   figures[16][3] := (2,0); //  X
   figures[16][4] := (0,-1); // XXX
   
   figures[17][1] := (0,0);
-  figures[17][2] := (0,1);  //XX
-  figures[17][3] := (1,0); // X
-  figures[17][4] := (0,2); // X 
+  figures[17][2] := (0,-1);  //XX
+  figures[17][3] := (1,-2); // X
+  figures[17][4] := (0,-2); // X 
   
-  figures[18][1] := (0,0);
-  figures[18][2] := (1,0);
-  figures[18][3] := (2,0); // XXX
-  figures[18][4] := (2,1); //   X
+  figures[18][1] := (0,-1);
+  figures[18][2] := (1,-1);
+  figures[18][3] := (2,-1); // XXX
+  figures[18][4] := (2,0); //   X
   
-  figures[19][1] := (0,0);
-  figures[19][2] := (0,1); // X
-  figures[19][3] := (0,2); // X
-  figures[19][4] := (-1,2); //XX 
+  figures[19][1] := (1,-2);
+  figures[19][2] := (1,-1); //X
+  figures[19][3] := (1,0); // X
+  figures[19][4] := (0,0); //XX 
   
   
   
@@ -189,12 +190,36 @@ begin
     square(x+figures[number][i].x,y+figures[number][i].y,c);
 end;
 
+function move_figure(number:integer; var level:integer):boolean;
+var flag:boolean;
+begin
+  flag:=true;
+  for var i:=1 to 4 do
+  begin
+    if(field[left_tilt+figure[number].x][level+figure[number].y] = false) then flag:=false;
+  end;
+  if(flag) then
+  begin
+    draw_figure(number,left_tilt+figure[number].x,level+figure[number].y);
+    level:=level+1;
+  end;
+  move_figure:=flag;
+end;
+
+procedure tilt(vk:integer);
+begin
+  if(vk == vk_left and left_tilt > 0) then
+    left_tilt:=left_tilt-1;
+    
+end;
+
 var x,y:integer;
     need_check, go_down:boolean;
-    figure:integer;
+    figure, level:integer;
 
 BEGIN
   setWindowSize(a*M,a*N);
+  set_figures;
   for x:=0 to M do
     for y:=0 to N do
     begin
@@ -203,9 +228,20 @@ BEGIN
       rectangle(a*x,a*y,a*(x+1),a*(y+1));
     end;
   redraw_field;
-  while(true) do
+ { for var t:=1 to 19 do
   begin
-    //go_
+    draw_figure(t,5,5);
+    sleep(2000);
+  end;
+ } while(true) do
+  begin
+    level:=0;
+    left_tilt:=9;
+    figure:= random(1,20);
+    go_down:=true;
+    while(go_down) do
+      go_down:=move_figure(figure, level);
+    
     need_check:=true;
     while(need_check) do
     begin
