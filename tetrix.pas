@@ -1,20 +1,21 @@
+
+
 uses GraphABC;
-uses Timers;
 
 const
-  M = 8;
-  N = 15;
-  a = 20;
+  M = 9;
+  N = 20;
+  a = 30;
   T = 200;
 
 type
-  Ar = array [-3..N,0..M] of boolean;
+  Ar = array [-3..N, 0..M] of boolean;
 
 type
-  Ac = array [0..N,0..M] of Color;
+  Ac = array [0..N, 0..M] of Color;
 
 type
-  Af = array [1..19,1..4] of Point;
+  Af = array [1..19, 1..4] of Point;
 
 var
   colors: Ac;
@@ -23,6 +24,7 @@ var
   left_tilt, number: integer;
   figure_color: color;
   level: integer;
+  endgame: boolean;
 
 procedure set_figures();
 begin
@@ -30,6 +32,7 @@ begin
   figures[1][2] := (0, -1);
   figures[1][3] := (1, 0); //  XX
   figures[1][4] := (1, -1); // XX
+  
   
   figures[2][1] := (0, 0);
   figures[2][2] := (1, 0);
@@ -51,6 +54,7 @@ begin
   figures[5][3] := (1, -2); // XX
   figures[5][4] := (1, -1); //  X
   
+  
   figures[6][1] := (0, 0); //  X
   figures[6][2] := (0, -1); // X
   figures[6][3] := (0, -2); // X
@@ -60,6 +64,7 @@ begin
   figures[7][2] := (1, 0); 
   figures[7][3] := (2, 0); 
   figures[7][4] := (3, 0); // XXXX 
+  
   
   figures[8][1] := (0, 0);
   figures[8][2] := (1, 0);
@@ -71,6 +76,7 @@ begin
   figures[9][3] := (1, -1); // XX
   figures[9][4] := (1, 0); //   X 
   
+  
   figures[10][1] := (0, -1);
   figures[10][2] := (1, -1);
   figures[10][3] := (1, 0); // XX
@@ -81,8 +87,6 @@ begin
   figures[11][3] := (0, -1); //XX
   figures[11][4] := (1, -2); //X
   
-  //  X
-  //XXX
   
   figures[12][1] := (0, 0);
   figures[12][2] := (1, 0);
@@ -94,18 +98,15 @@ begin
   figures[13][3] := (0, -2); // X
   figures[13][4] := (1, 0); //  XX 
   
-  
   figures[14][1] := (0, 0);
   figures[14][2] := (0, -1);
   figures[14][3] := (1, -1);// XXX
-  figures[14][4] := (2, -1);//  X
+  figures[14][4] := (2, -1);// X
   
   figures[15][1] := (0, -2);
   figures[15][2] := (1, 0);  // XX
   figures[15][3] := (1, -1); //  X
-  figures[15][4] := (1, -2); //  X 
-  
-  
+  figures[15][4] := (1, -2); //  X
   
   
   figures[16][1] := (0, 0);
@@ -147,7 +148,7 @@ begin
     for j := 0 to M do
     begin
       if(field[i][j] = true) then
-        square(j,i,clBlack)
+        square(j, i, clBlack)
       else
         square(j, i, colors[i][j]);
     end;
@@ -181,8 +182,8 @@ begin
       begin
         for j := 0 to M do 
         begin
-          colors[i][j] := colors[i-1][j];
-          field[i][j] := field[i-1][j];
+          colors[i][j] := colors[i - 1][j];
+          field[i][j] := field[i - 1][j];
         end;
       end;
       for i := 0 to M do 
@@ -193,10 +194,10 @@ begin
       flag := true; 
     end
     else
-  //  writeln(y);
-//    circle(0,0,10);
+    //  writeln(y);
+    //    circle(0,0,10);
     // redraw_field;
-  //    sleep(30);
+    //    sleep(30);
       redraw;
   end;
   check_field := flag;
@@ -205,8 +206,8 @@ end;
 
 procedure draw_figure(x, y: integer; c: Color);
 begin
- // for var i := 1 to 4 do
- //   square(x + figures[number][i].x, y + figures[number][i].y - 1, clWhite);
+  // for var i := 1 to 4 do
+  //   square(x + figures[number][i].x, y + figures[number][i].y - 1, clWhite);
   for var i := 1 to 4 do
     square(x + figures[number][i].x, y + figures[number][i].y, c);
   redraw;
@@ -228,55 +229,60 @@ begin
   end
   else
   begin
-    for var t := 1 to 4 do
+    if(level <= 1) then
+      endgame := true
+    else
     begin
-      field[level-1 + figures[number][t].y][left_tilt + figures[number][t].x] := true;
-      colors[level-1 + figures[number][t].y][left_tilt + figures[number][t].x] := figure_color;
+      for var t := 1 to 4 do
+      begin
+        field[level - 1 + figures[number][t].y][left_tilt + figures[number][t].x] := true;
+        colors[level - 1 + figures[number][t].y][left_tilt + figures[number][t].x] := figure_color;
+      end;
     end;
   end;
   move_figure := flag;
 end;
 
-function can_fit(tilt: integer): boolean;
-var can: boolean;
+procedure turn(clockwise: boolean);
 begin
-  if (level = N + 1)then
+  if(clockwise) then
+  begin
+    if(number = 5) or (number = 15) or (number = 19) then
+      number := number - 3
+    else if (number = 7) or (number = 9) or (number = 11) then
+      number := number - 1
+    else if(number = 1) then 
+      number := 1
+    else 
+      number := number + 1;
+  end
+  else
+  begin
+    if(number = 2) or (number = 12) or (number = 16) then
+      number := number + 3
+    else if (number = 6) or (number = 8) or (number = 10) then
+      number := number + 1
+    else if(number = 1) then 
+      number := 1
+    else 
+      number := number - 1;
+  end;
+end;
+
+function can_fit(tilt: integer): boolean;
+var
+  can: boolean;
+begin
+  if (level = N + 1) then
     can_fit := false
   else 
   begin
     can := true;
     for var i := 1 to 4 do
     begin
-      can := can and(field[level + figures[number][i].y][left_tilt + tilt + figures[number][i].x] = false);
+      can := can and (field[level + figures[number][i].y][left_tilt + tilt + figures[number][i].x] = false);
     end;
     can_fit := can;
-  end;
-end;
-
-
-procedure turn(clockwise:boolean);
-begin
-  if(clockwise) then
-  begin
-    if(number = 5) or (number = 15) or (number = 19) then
-      number:=number-3
-    else if (number = 7) or (number = 9) or (number = 11) then
-      number:=number-1
-    else if(number = 1) then 
-      number:=1
-    else 
-    number:=number+1;
-  end
-  else
-  begin
-    if(number = 2) or (number = 12) or (number = 16) then
-      number:=number+3
-    else if (number = 6) or (number = 8) or (number = 10) then
-      number:=number+1
-    else if(number = 1) then 
-      number:=1
-    else 
-    number:=number-1;
   end;
 end;
 
@@ -299,17 +305,19 @@ begin
     can_turn := can;
   end;
 end;
-function can_fit_down():boolean;
-var can: boolean;
+
+function can_fit_down(): boolean;
+var
+  can: boolean;
 begin
   if (level = N) then 
-    can_fit_down:= false
+    can_fit_down := false
   else 
   begin
     can := true;
     for var i := 1 to 4 do
     begin
-      can := can and(field[level + 1 + figures[number][i].y][left_tilt + figures[number][i].x] = false);
+      can := can and (field[level + 1 + figures[number][i].y][left_tilt + figures[number][i].x] = false);
     end;
     can_fit_down := can;
   end;
@@ -339,11 +347,11 @@ end;
 var
   x, y: integer;
   need_check, go_down: boolean;
-  Timer_begin  : double;
+
 begin
   LockDrawing;
-  setWindowSize(a * (M+1), a * (N+1));
-  
+  setWindowSize(a * (M + 1), a * (N + 1));
+  endgame := false;
   set_figures;
   for x := 0 to M do
     for y := 0 to N do
@@ -353,7 +361,7 @@ begin
       rectangle(a * x, a * y, a * (x + 1), a * (y + 1));
     end;
   redraw_field;
-  while(true) do
+  while not (endgame) do
   begin
     onKeyDown := tilt;
     level := 0;
@@ -364,12 +372,13 @@ begin
     while(go_down) do
     begin
       go_down := move_figure();
-      //Timer_begin := Time;
       sleep(T);
-      //writeln(Timer - Time);
       redraw_field;
     end;
     need_check := check_field;
     if(need_check) then redraw_field;
   end;
+  clearWindow(clBlack);
+  Write('Game Over');
+  redraw;
 end.
