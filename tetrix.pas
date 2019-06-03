@@ -1,6 +1,4 @@
-﻿//COMMIT 22.06
-
-uses GraphABC;
+﻿uses GraphABC;
 
 const
   M = 19;
