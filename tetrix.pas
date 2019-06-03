@@ -1,6 +1,4 @@
-﻿
-
-uses GraphABC;
+﻿uses GraphABC;
 
 const
   M = 9;
@@ -33,6 +31,7 @@ begin
   figures[1][3] := (1, 0); //  XX
   figures[1][4] := (1, -1); // XX
   
+  
   figures[2][1] := (0, 0);
   figures[2][2] := (1, 0);
   figures[2][3] := (1, -1); // X
@@ -53,6 +52,7 @@ begin
   figures[5][3] := (1, -2); // XX
   figures[5][4] := (1, -1); //  X
   
+  
   figures[6][1] := (0, 0); //  X
   figures[6][2] := (0, -1); // X
   figures[6][3] := (0, -2); // X
@@ -62,6 +62,7 @@ begin
   figures[7][2] := (1, 0); 
   figures[7][3] := (2, 0); 
   figures[7][4] := (3, 0); // XXXX 
+  
   
   figures[8][1] := (0, 0);
   figures[8][2] := (1, 0);
@@ -73,6 +74,7 @@ begin
   figures[9][3] := (1, -1); // XX
   figures[9][4] := (1, 0); //   X 
   
+  
   figures[10][1] := (0, -1);
   figures[10][2] := (1, -1);
   figures[10][3] := (1, 0); // XX
@@ -83,8 +85,6 @@ begin
   figures[11][3] := (0, -1); //XX
   figures[11][4] := (1, -2); //X
   
-  //  X
-  //XXX
   
   figures[12][1] := (0, 0);
   figures[12][2] := (1, 0);
@@ -96,7 +96,6 @@ begin
   figures[13][3] := (0, -2); // X
   figures[13][4] := (1, 0); //  XX 
   
-  
   figures[14][1] := (0, 0);
   figures[14][2] := (0, -1);
   figures[14][3] := (1, -1);// XXX
@@ -105,9 +104,7 @@ begin
   figures[15][1] := (0, -2);
   figures[15][2] := (1, 0);  // XX
   figures[15][3] := (1, -1); //  X
-  figures[15][4] := (1, -2); //  X 
-  
-  
+  figures[15][4] := (1, -2); //  X
   
   
   figures[16][1] := (0, 0);
