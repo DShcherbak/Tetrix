@@ -1,4 +1,6 @@
-﻿uses GraphABC;
+﻿
+
+uses GraphABC;
 
 const
   M = 8;
@@ -252,16 +254,36 @@ begin
   end;
 end;
 
+function can_fit_down():boolean;
+var can: boolean;
+begin
+  if (level = N) then 
+    can_fit_down:= false
+  else 
+  begin
+    can := true;
+    for var i := 1 to 4 do
+    begin
+      can := can and(field[level + 1 + figures[number][i].y][left_tilt + figures[number][i].x] = false);
+    end;
+    can_fit_down := can;
+  end;
+end;
+
 procedure tilt(vk: integer);
 var
   poss: boolean;
 begin
+  if ((vk = vk_down) and (level <= N))then
+    while (can_fit_down) do 
+      inc(level);
   if((vk = vk_left) and (left_tilt > 0) and can_fit(-1)) then
   begin
     left_tilt := left_tilt - 1;
   end;
   if((vk = vk_right) and (left_tilt + figures[number][4].x + 1 <= M) and can_fit(1)) then
     left_tilt := left_tilt + 1;
+  
 end;
 
 
