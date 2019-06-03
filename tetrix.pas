@@ -1,4 +1,5 @@
-﻿uses GraphABC;
+//Deniska-sosiska
+uses GraphABC;
 
 const
   M = 19;
