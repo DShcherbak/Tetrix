@@ -1,20 +1,20 @@
-//Deniska-sosiska
-//Vania loh
+﻿
+
 uses GraphABC;
 
 const
-  M = 19;
-  N = 29;
-  a = 20;
+  M = 6;
+  N = 19;
+  a = 30;
 
 type
-  Ar = array [0..M] of array [-3..N] of boolean;
+  Ar = array [-3..N,0..M] of boolean;
 
 type
-  Ac = array [0..M] of array [0..N] of Color;
+  Ac = array [0..N,0..M] of Color;
 
 type
-  Af = array [1..19] of array [1..4] of Point;
+  Af = array [1..19,1..4] of Point;
 
 var
   colors: Ac;
@@ -142,22 +142,25 @@ procedure redraw_field();
 var
   i, j: integer;
 begin
-  for i := 0 to M do
-    for j := 0 to N do
+  for i := 0 to N do
+    for j := 0 to M do
     begin
-      square(i, j, colors[i][j]);
+      if(field[i][j] = true) then
+        square(j,i,clBlack)
+      else
+        square(j, i, colors[i][j]);
     end;
   redraw;
 end;
 
 
-function check_row(j: integer): boolean;
+function check_row(i: integer): boolean;
 var
-  i: integer;
+  j: integer;
   flag: boolean;
 begin
   flag := true;
-  for i := 0 to M do
+  for j := 0 to M do
     if(field[i][j] = false) then flag := false;
   check_row := flag;
 end;
@@ -173,23 +176,27 @@ begin
   begin
     if(check_row(y)) then 
     begin
-      for j := y downto 1 do
+      for i := y downto 1 do
       begin
-        for i := 0 to M do 
+        for j := 0 to M do 
         begin
-          colors[i][j] := colors[i][j - 1];
-          field[i][j] := field[i][j - 1];
+          colors[i][j] := colors[i-1][j];
+          field[i][j] := field[i-1][j];
         end;
       end;
       for i := 0 to M do 
       begin
-        colors[i][0] := clWhite;
-        field[i][0] := false;
+        colors[0][i] := clWhite;
+        field[0][i] := false;
       end;
       flag := true; 
-    end;
+    end
+    else
+  //  writeln(y);
+//    circle(0,0,10);
     // redraw_field;
-    //  sleep(300);
+  //    sleep(30);
+      redraw;
   end;
   check_field := flag;
 end;
@@ -211,7 +218,7 @@ begin
   flag := true;
   for var i := 1 to 4 do
   begin
-    if((level = N) or (field[left_tilt + figures[number][i].x][level + figures[number][i].y] = true)) then flag := false;
+    if((level = N) or (field[level + figures[number][i].y][left_tilt + figures[number][i].x] = true)) then flag := false;
   end; 
   if(flag) then
   begin
@@ -222,8 +229,8 @@ begin
   begin
     for var t := 1 to 4 do
     begin
-      field[left_tilt + figures[number][t].x][level-1 + figures[number][t].y] := true;
-      colors[left_tilt + figures[number][t].x][level-1 + figures[number][t].y] := figure_color;
+      field[level-1 + figures[number][t].y][left_tilt + figures[number][t].x] := true;
+      colors[level-1 + figures[number][t].y][left_tilt + figures[number][t].x] := figure_color;
     end;
   end;
   move_figure := flag;
@@ -236,7 +243,7 @@ var
 begin
   if((vk = vk_left) and (left_tilt > 0)) then
     left_tilt := left_tilt - 1;
-  if((vk = vk_right) and (left_tilt + figures[number][4].x + 1 < M)) then
+  if((vk = vk_right) and (left_tilt + figures[number][4].x + 1 <= M)) then
     left_tilt := left_tilt + 1;
 end;
 
@@ -249,14 +256,14 @@ var
 
 begin
   LockDrawing;
-  setWindowSize(a * M, a * N);
+  setWindowSize(a * (M+1), a * (N+1));
   onKeyDown := tilt;
   set_figures;
   for x := 0 to M do
     for y := 0 to N do
     begin
-      field[x][y] := false;
-      colors[x][y] := clwhite;
+      field[y][x] := false;
+      colors[y][x] := clwhite;
       rectangle(a * x, a * y, a * (x + 1), a * (y + 1));
     end;
   redraw_field;
@@ -267,8 +274,8 @@ begin
    end;
   } while(true) do
   begin
-    level := 3;
-    left_tilt := 9;
+    level := 0;
+    left_tilt := M div 2;
     number := random(1, 19);
     figure_color := clRandom;
     go_down := true;
@@ -278,13 +285,7 @@ begin
       sleep(300);
       redraw_field;
     end;
-    need_check := true;
-    while(need_check) do
-    begin
-      need_check := check_field;
-   //   circle(100, 100, 100);
-      // sleep(500);
-      redraw_field;
-    end;
+    need_check := check_field;
+    if(need_check) then redraw_field;
   end;
 end.
