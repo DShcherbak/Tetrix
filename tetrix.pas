@@ -1,4 +1,5 @@
 //Deniska-sosiska
+//Vania loh
 uses GraphABC;
 
 const
