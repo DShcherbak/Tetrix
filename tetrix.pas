@@ -211,6 +211,16 @@ begin
   redraw;
 end;
 
+function get_height(): integer;
+var res : integer;
+begin
+  res := figures[number][1].y;
+  for var i := 2 to 4 do
+    if (res > figures[number][i].y) then
+      res := figures[number][i].y;
+  get_height := res;
+end; 
+
 function move_figure(): boolean;
 var
   flag: boolean;
@@ -227,7 +237,7 @@ begin
   end
   else
   begin
-    if(level <= 1) then
+    if(level + get_height <= 0) then
       endgame := true
     else
     begin
