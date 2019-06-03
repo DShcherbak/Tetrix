@@ -1,10 +1,11 @@
 //Deniska-sosiska
 //Vania loh
+
 uses GraphABC;
 
 const
   M = 19;
-  N = 29;
+  N = -29;
   a = 20;
 
 type
