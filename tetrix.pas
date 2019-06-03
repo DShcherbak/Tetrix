@@ -267,87 +267,82 @@ begin
   end;
 end;
 
-function can_fit(tilt: integer): boolean;
+function can_be_drawn():boolean;
 var
-  can: boolean;
-begin
-  if (level = N + 1) then
-    can_fit := false
-  else 
-  begin
-    can := true;
-    for var i := 1 to 4 do
-    begin
-      can := can and (field[level + figures[number][i].y][left_tilt + tilt + figures[number][i].x] = false);
-    end;
-    can_fit := can;
-  end;
-end;
-
-function can_turn(clockwise:boolean):boolean;
-var can: boolean;
+  can: boolean; 
 begin
   if (level = N + 1) then 
-    can_turn:= false
+    can_be_drawn := false
   else 
   begin
     can := true;
-    turn(clockwise);
     for var i := 1 to 4 do
     begin
-      if ((level + figures[number][i].y > N) or (level + figures[number][i].y < 0) or (left_tilt + figures[number][i].x > M)) then
+      if ((level + figures[number][i].y > N) or (level + figures[number][i].y < 0) or (left_tilt + figures[number][i].x > M) or (left_tilt + figures[number][i].x < 0)) then
         can := false;
-      can := can and(field[level + figures[number][i].y][left_tilt + figures[number][i].x] = false);
+      can := can and (field[level + figures[number][i].y][left_tilt + figures[number][i].x] = false);
     end;
-    turn(not(clockwise));
-    can_turn := can;
-  end;
+    can_be_drawn := can;
+  end
 end;
 
-function can_fit_down(): boolean;
-var
-  can: boolean;
+procedure down();
 begin
-  if (level = N) then 
-    can_fit_down := false
-  else 
-  begin
-    can := true;
-    for var i := 1 to 4 do
+  while (can_be_drawn) do
     begin
-      can := can and (field[level + 1 + figures[number][i].y][left_tilt + figures[number][i].x] = false);
+      inc(level);
     end;
-    can_fit_down := can;
-  end;
+    dec(level);
 end;
+
+procedure left();
+begin 
+  dec(left_tilt);
+    if (not(can_be_drawn)) then
+      inc(left_tilt);
+end;
+
+procedure right();
+begin
+    inc(left_tilt);
+    if (not(can_be_drawn))then
+      dec(left_tilt);
+end;
+
+procedure turn_right();
+var poss:boolean;
+begin
+    poss:= false;
+    while ((not(poss))and (can_be_drawn)) do
+    begin
+      turn(true);
+      if (can_be_drawn) then 
+        poss := true
+      else 
+      begin
+        dec(left_tilt);
+        turn(false);
+      end;
+    end;
+ end;
+ 
+ procedure turn_left();
+ begin 
+  turn(false);
+ end;
 
 procedure tilt(vk: integer);
-var
-  poss: boolean;
 begin
-  if ((vk = vk_down) and (level <= N))then
-    while (can_fit_down) do 
-      inc(level);
-  if((vk = vk_left) and (left_tilt > 0) and can_fit(-1)) then
-  begin
-    left_tilt := left_tilt - 1;
-  end;
-  if((vk = vk_right) and (left_tilt + figures[number][4].x + 1 <= M) and can_fit(1)) then
-    left_tilt := left_tilt + 1;
-  if(vk = vk_z) then
-  begin
-    while (not(can_turn(false))and (can_fit(-1))) do
-      left_tilt := left_tilt - 1;
-    if (can_turn(false)) then
-      turn(false);
-  end;
+  if(vk = vk_down) then
+    down;
+  if(vk = vk_left) then
+    left;
+  if(vk = vk_right) then
+    right;
   if(vk = vk_x) then
-  begin
-    while (not(can_turn(true))and (can_fit(-1)))do
-      left_tilt := left_tilt - 1;
-    if (can_turn(true)) then
-      turn(true);
-  end;
+    turn_right;
+  if(vk = vk_z) then
+    turn_left;
 end;
 
 
