@@ -1,10 +1,13 @@
-﻿uses GraphABC;
+
+
+uses GraphABC;
 
 const
-  M = 6;
-  N = 19;
-  a = 30;
-
+  M = 19;
+  N = 29;
+  a = 20;
+  T = 200;
+  
 type
   Ar = array [-3..N,0..M] of boolean;
 
