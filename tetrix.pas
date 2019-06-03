@@ -1,4 +1,4 @@
-﻿uses GraphABC;
+﻿﻿uses GraphABC;
 
 const
   M = 9;
