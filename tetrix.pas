@@ -1,4 +1,4 @@
-﻿﻿uses GraphABC;
+uses GraphABC;
 
 const
   M = 9;
@@ -334,10 +334,20 @@ begin
   end;
   if((vk = vk_right) and (left_tilt + figures[number][4].x + 1 <= M) and can_fit(1)) then
     left_tilt := left_tilt + 1;
-  if((vk = vk_z) and (can_turn(false))) then
-    turn(false);
-  if((vk = vk_x) and (can_turn(true))) then
-    turn(true);
+  if(vk = vk_z) then
+  begin
+    while (not(can_turn(false))and (can_fit(-1))) do
+      left_tilt := left_tilt - 1;
+    if (can_turn(false)) then
+      turn(false);
+  end;
+  if(vk = vk_x) then
+  begin
+    while (not(can_turn(true))and (can_fit(-1)))do
+      left_tilt := left_tilt - 1;
+    if (can_turn(true)) then
+      turn(true);
+  end;
 end;
 
 
