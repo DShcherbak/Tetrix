@@ -1,5 +1,3 @@
-
-
 uses GraphABC;
 
 const
