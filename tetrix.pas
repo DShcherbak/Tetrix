@@ -1,11 +1,11 @@
-﻿uses GraphABC;
+uses GraphABC;
 
 const
-  M = 19;
-  N = 29;
+  M = 8;
+  N = 15;
   a = 20;
   T = 200;
-  
+
 type
   Ar = array [-3..N,0..M] of boolean;
 
@@ -21,6 +21,7 @@ var
   figures: Af;
   left_tilt, number: integer;
   figure_color: color;
+  level: integer;
 
 procedure set_figures();
 begin
@@ -210,14 +211,14 @@ begin
   redraw;
 end;
 
-function move_figure(var level: integer): boolean;
+function move_figure(): boolean;
 var
   flag: boolean;
 begin
   flag := true;
   for var i := 1 to 4 do
   begin
-    if((level = N) or (field[level + figures[number][i].y][left_tilt + figures[number][i].x] = true)) then flag := false;
+    if((level = N + 1) or (field[level + figures[number][i].y][left_tilt + figures[number][i].x] = true)) then flag := false;
   end; 
   if(flag) then
   begin
@@ -235,14 +236,31 @@ begin
   move_figure := flag;
 end;
 
+function can_fit(tilt: integer): boolean;
+var can: boolean;
+begin
+  if (level = N + 1)then
+    can_fit := false
+  else 
+  begin
+    can := true;
+    for var i := 1 to 4 do
+    begin
+      can := can and(field[level + figures[number][i].y][left_tilt + tilt + figures[number][i].x] = false);
+    end;
+    can_fit := can;
+  end;
+end;
 
 procedure tilt(vk: integer);
 var
   poss: boolean;
 begin
-  if((vk = vk_left) and (left_tilt > 0)) then
+  if((vk = vk_left) and (left_tilt > 0) and can_fit(-1)) then
+  begin
     left_tilt := left_tilt - 1;
-  if((vk = vk_right) and (left_tilt + figures[number][4].x + 1 <= M)) then
+  end;
+  if((vk = vk_right) and (left_tilt + figures[number][4].x + 1 <= M) and can_fit(1)) then
     left_tilt := left_tilt + 1;
 end;
 
@@ -251,12 +269,11 @@ end;
 var
   x, y: integer;
   need_check, go_down: boolean;
-  level: integer;
 
 begin
   LockDrawing;
   setWindowSize(a * (M+1), a * (N+1));
-  onKeyDown := tilt;
+  
   set_figures;
   for x := 0 to M do
     for y := 0 to N do
@@ -266,13 +283,9 @@ begin
       rectangle(a * x, a * y, a * (x + 1), a * (y + 1));
     end;
   redraw_field;
-  { for var t:=1 to 19 do
-   begin
-     draw_figure(t,5,5);
-     sleep(2000);
-   end;
-  } while(true) do
+  while(true) do
   begin
+    onKeyDown := tilt;
     level := 0;
     left_tilt := M div 2;
     number := random(1, 19);
@@ -280,8 +293,8 @@ begin
     go_down := true;
     while(go_down) do
     begin
-      go_down := move_figure(level);
-      sleep(300);
+      go_down := move_figure();
+      sleep(T);
       redraw_field;
     end;
     need_check := check_field;
